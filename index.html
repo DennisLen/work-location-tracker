@@ -27,13 +27,13 @@
     <script>
         // Your web app's Firebase configuration
         const firebaseConfig = {
-              apiKey: "AIzaSyBBCVn8dlHOno5aH8X-9i0LN9Bpm-hhiyc",
-              authDomain: "week-schedule-25992.firebaseapp.com",
-              projectId: "week-schedule-25992",
-              storageBucket: "week-schedule-25992.appspot.com",
-              messagingSenderId: "78973064283",
-              appId: "1:78973064283:web:fb55d96be58d7581ba9b7e",
-              measurementId: "G-0DLPGVME5Y"
+          apiKey: "AIzaSyBBCVn8dlHOno5aH8X-9i0LN9Bpm-hhiyc",
+          authDomain: "week-schedule-25992.firebaseapp.com",
+          projectId: "week-schedule-25992",
+          storageBucket: "week-schedule-25992.appspot.com",
+          messagingSenderId: "78973064283",
+          appId: "1:78973064283:web:fb55d96be58d7581ba9b7e",
+          measurementId: "G-0DLPGVME5Y"
         };
 
         // Initialize Firebase
@@ -69,119 +69,6 @@
                 const li = document.createElement('li');
                 li.textContent = `${data.name}: ${data.location}`;
                 locationList.appendChild(li);
-            });
-        });
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work Location Tracker</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            padding: 8px;
-            border: 1px solid #ddd;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
-    </style>
-</head>
-<body>
-    <h1>Work Location Tracker</h1>
-    <form id="locationForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br><br>
-        <label for="monday">Monday:</label>
-        <input type="text" id="monday" name="monday"><br><br>
-        <label for="tuesday">Tuesday:</label>
-        <input type="text" id="tuesday" name="tuesday"><br><br>
-        <label for="wednesday">Wednesday:</label>
-        <input type="text" id="wednesday" name="wednesday"><br><br>
-        <label for="thursday">Thursday:</label>
-        <input type="text" id="thursday" name="thursday"><br><br>
-        <label for="friday">Friday:</label>
-        <input type="text" id="friday" name="friday"><br><br>
-        <button type="submit">Submit</button>
-    </form>
-
-    <table id="locationTable">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Monday</th>
-                <th>Tuesday</th>
-                <th>Wednesday</th>
-                <th>Thursday</th>
-                <th>Friday</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Entries will appear here -->
-        </tbody>
-    </table>
-
-    <!-- Include Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.8.4/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.8.4/firebase-firestore.js"></script>
-    <script>
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBBCVn8dlHOno5aH8X-9i0LN9Bpm-hhiyc",
-            authDomain: "week-schedule-25992.firebaseapp.com",
-            projectId: "week-schedule-25992",
-            storageBucket: "week-schedule-25992.appspot.com",
-            messagingSenderId: "78973064283",
-            appId: "1:78973064283:web:fb55d96be58d7581ba9b7e",
-            measurementId: "G-0DLPGVME5Y"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        document.getElementById('locationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const monday = document.getElementById('monday').value;
-            const tuesday = document.getElementById('tuesday').value;
-            const wednesday = document.getElementById('wednesday').value;
-            const thursday = document.getElementById('thursday').value;
-            const friday = document.getElementById('friday').value;
-
-            db.collection("locations").add({
-                name: name,
-                monday: monday,
-                tuesday: tuesday,
-                wednesday: wednesday,
-                thursday: thursday,
-                friday: friday
-            });
-
-            // Clear form fields
-            document.getElementById('locationForm').reset();
-        });
-
-        db.collection("locations").onSnapshot((snapshot) => {
-            const table = document.getElementById('locationTable').getElementsByTagName('tbody')[0];
-            table.innerHTML = "";
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                let row = document.createElement('tr');
-                row.innerHTML = `<td>${data.name}</td><td>${data.monday}</td><td>${data.tuesday}</td><td>${data.wednesday}</td><td>${data.thursday}</td><td>${data.friday}</td>`;
-                table.appendChild(row);
             });
         });
     </script>

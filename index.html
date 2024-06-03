@@ -1,76 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work Location Tracker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Work Locations</title>
 </head>
 <body>
-    <h1>Work Location Tracker</h1>
+  <h1>Work Locations for Next Week</h1>
+  
+  <!-- Form to submit location -->
+  <form id="locationForm">
+    <label for="location">Your Location:</label>
+    <input type="text" id="location" name="location" required>
+    <button type="submit">Submit</button>
+  </form>
+  
+  <!-- Display submitted locations -->
+  <h2>Submitted Locations</h2>
+  <ul id="locationList"></ul>
 
-    <!-- Form to submit work location -->
-    <form id="locationForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br><br>
-        <label for="location">Work Location:</label>
-        <input type="text" id="location" name="location" required><br><br>
-        <button type="submit">Submit</button>
-    </form>
+  <!-- Firebase SDK -->
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
 
-    <!-- Display submitted locations -->
-    <h2>Submitted Locations</h2>
-    <ul id="locationList"></ul>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMRTKYMMU44Ku4YGRVszCn6cIi-NgZoKU",
+      authDomain: "hns-work-location.firebaseapp.com",
+      projectId: "hns-work-location",
+      storageBucket: "hns-work-location.appspot.com",
+      messagingSenderId: "567765757600",
+      appId: "1:567765757600:web:e6b4822c041054dca9e3c5",
+      measurementId: "G-JYWP3F8N7B"
+    };
 
-    <!-- Include Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.8.4/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.8.4/firebase-firestore.js"></script>
-    <script>
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-          apiKey: "AIzaSyBBCVn8dlHOno5aH8X-9i0LN9Bpm-hhiyc",
-          authDomain: "week-schedule-25992.firebaseapp.com",
-          projectId: "week-schedule-25992",
-          storageBucket: "week-schedule-25992.appspot.com",
-          messagingSenderId: "78973064283",
-          appId: "1:78973064283:web:fb55d96be58d7581ba9b7e",
-          measurementId: "G-0DLPGVME5Y"
-        };
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+  </script>
 
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
+  <!-- Your JavaScript code for interacting with Firebase -->
+  <script>
+    // Firebase SDK script has already initialized Firebase, so no need to initialize again
+    const database = firebase.database();
 
-        // Reference to the collection
-        const locationsRef = db.collection("locations");
+    // Handle form submission
+    const form = document.getElementById('locationForm');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const locationInput = document.getElementById('location').value;
+      saveLocation(locationInput);
+      form.reset();
+    });
 
-        // Listen for form submission
-        document.getElementById('locationForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const name = document.getElementById('name').value;
-            const location = document.getElementById('location').value;
+    // Function to save location to Firebase
+    function saveLocation(location) {
+      const newLocationRef = database.ref('locations').push();
+      newLocationRef.set({
+        location: location
+      });
+    }
 
-            // Add data to Firestore
-            locationsRef.add({
-                name: name,
-                location: location
-            });
-
-            // Clear form fields
-            document.getElementById('name').value = "";
-            document.getElementById('location').value = "";
-        });
-
-        // Listen for real-time updates and display submitted locations
-        locationsRef.onSnapshot((snapshot) => {
-            const locationList = document.getElementById('locationList');
-            locationList.innerHTML = "";
-            snapshot.forEach((doc) => {
-                const data = doc.data();
-                const li = document.createElement('li');
-                li.textContent = `${data.name}: ${data.location}`;
-                locationList.appendChild(li);
-            });
-        });
-    </script>
+    // Function to display locations from Firebase
+    const locationList = document.getElementById('locationList');
+    database.ref('locations').on('value', (snapshot) => {
+      locationList.innerHTML = '';
+      snapshot.forEach((childSnapshot) => {
+        const location = childSnapshot.val().location;
+        const li = document.createElement('li');
+        li.textContent = location;
+        locationList.appendChild(li);
+      });
+    });
+  </script>
 </body>
 </html>

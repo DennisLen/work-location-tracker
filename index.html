@@ -1,79 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Work Locations</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Location</title>
 </head>
 <body>
-  <h1>Work Locations for Next Week</h1>
-  
-  <!-- Form to submit location -->
-  <form id="locationForm">
-    <label for="location">Your Location:</label>
-    <input type="text" id="location" name="location" required>
-    <button type="submit">Submit</button>
-  </form>
-  
-  <!-- Display submitted locations -->
-  <h2>Submitted Locations</h2>
-  <ul id="locationList"></ul>
+    <h2>Work Location</h2>
+    <form id="workForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    // Import the functions you need from the SDKs you need
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+        <label for="monday">Monday:</label>
+        <select id="monday" name="monday">
+            <option value="Zwo">Zwo</option>
+            <option value="Lei">Lei</option>
+            <option value="Other">Other</option>
+            <option value="Home">Home</option>
+        </select><br><br>
 
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyCMRTKYMMU44Ku4YGRVszCn6cIi-NgZoKU",
-      authDomain: "hns-work-location.firebaseapp.com",
-      projectId: "hns-work-location",
-      storageBucket: "hns-work-location.appspot.com",
-      messagingSenderId: "567765757600",
-      appId: "1:567765757600:web:e6b4822c041054dca9e3c5",
-      measurementId: "G-JYWP3F8N7B"
-    };
+        <label for="tuesday">Tuesday:</label>
+        <select id="tuesday" name="tuesday">
+            <option value="Zwo">Zwo</option>
+            <option value="Lei">Lei</option>
+            <option value="Other">Other</option>
+            <option value="Home">Home</option>
+        </select><br><br>
 
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-  </script>
+        <label for="wednesday">Wednesday:</label>
+        <select id="wednesday" name="wednesday">
+            <option value="Zwo">Zwo</option>
+            <option value="Lei">Lei</option>
+            <option value="Other">Other</option>
+            <option value="Home">Home</option>
+        </select><br><br>
 
-  <!-- Your JavaScript code for interacting with Firebase -->
-  <script>
-    // Firebase SDK script has already initialized Firebase, so no need to initialize again
-    const database = firebase.database();
+        <label for="thursday">Thursday:</label>
+        <select id="thursday" name="thursday">
+            <option value="Zwo">Zwo</option>
+            <option value="Lei">Lei</option>
+            <option value="Other">Other</option>
+            <option value="Home">Home</option>
+        </select><br><br>
 
-    // Handle form submission
-    const form = document.getElementById('locationForm');
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const locationInput = document.getElementById('location').value;
-      saveLocation(locationInput);
-      form.reset();
-    });
+        <label for="friday">Friday:</label>
+        <select id="friday" name="friday">
+            <option value="Zwo">Zwo</option>
+            <option value="Lei">Lei</option>
+            <option value="Other">Other</option>
+            <option value="Home">Home</option>
+        </select><br><br>
 
-    // Function to save location to Firebase
-    function saveLocation(location) {
-      const newLocationRef = database.ref('locations').push();
-      newLocationRef.set({
-        location: location
-      });
-    }
+        <input type="submit" value="Submit">
+    </form>
 
-    // Function to display locations from Firebase
-    const locationList = document.getElementById('locationList');
-    database.ref('locations').on('value', (snapshot) => {
-      locationList.innerHTML = '';
-      snapshot.forEach((childSnapshot) => {
-        const location = childSnapshot.val().location;
-        const li = document.createElement('li');
-        li.textContent = location;
-        locationList.appendChild(li);
-      });
-    });
-  </script>
+    <h2>Work Location Summary</h2>
+    <table id="summaryTable">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+            </tr>
+        </thead>
+        <tbody id="summaryBody">
+            <!-- Submitted data will be inserted here -->
+        </tbody>
+    </table>
+
+    <script>
+        document.getElementById("workForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Get form data
+            var name = document.getElementById("name").value;
+            var monday = document.getElementById("monday").value;
+            var tuesday = document.getElementById("tuesday").value;
+            var wednesday = document.getElementById("wednesday").value;
+            var thursday = document.getElementById("thursday").value;
+            var friday = document.getElementById("friday").value;
+
+            // Create a new row in the table to display the submitted data
+            var newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td>${name}</td>
+                <td>${monday}</td>
+                <td>${tuesday}</td>
+                <td>${wednesday}</td>
+                <td>${thursday}</td>
+                <td>${friday}</td>
+            `;
+
+            // Append the new row to the table body
+            document.getElementById("summaryBody").appendChild(newRow);
+
+            // Reset form fields
+            document.getElementById("workForm").reset();
+        });
+
+        // Check and clear data at 00:00 every Saturday
+        setInterval(function() {
+            var today = new Date();
+            var dayOfWeek = today.getDay();
+            var hours = today.getHours();
+            var minutes = today.getMinutes();
+            var seconds = today.getSeconds();
+
+            if (dayOfWeek === 6 && hours === 0 && minutes === 0 && seconds === 0) { // Saturday 00:00:00
+                document.getElementById("summaryBody").innerHTML = ""; // Clear table body
+            }
+        }, 1000); // Check every second
+    </script>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+      // TODO: Add SDKs for Firebase products that you want to use
+      // https://firebase.google.com/docs/web/setup#available-libraries
+    
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyD9uu0YxIaSgdNE9sieoD_wL2O3_fPnh0Y",
+        authDomain: "hns-finance-location.firebaseapp.com",
+        projectId: "hns-finance-location",
+        storageBucket: "hns-finance-location.appspot.com",
+        messagingSenderId: "1035726269308",
+        appId: "1:1035726269308:web:d511b158da25d5aaab52f9",
+        measurementId: "G-86WVPWHPEY"
+      };
+    
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+    </script>
 </body>
 </html>

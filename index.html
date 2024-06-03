@@ -4,6 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Work Location Tracker</title>
+</head>
+<body>
+    <h1>Work Location Tracker</h1>
+
+    <!-- Form to submit work location -->
+    <form id="locationForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br><br>
+        <label for="location">Work Location:</label>
+        <input type="text" id="location" name="location" required><br><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <!-- Display submitted locations -->
+    <h2>Submitted Locations</h2>
+    <ul id="locationList"></ul>
+
+    <!-- Include Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.8.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.8.4/firebase-firestore.js"></script>
+    <script>
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+              apiKey: "AIzaSyBBCVn8dlHOno5aH8X-9i0LN9Bpm-hhiyc",
+              authDomain: "week-schedule-25992.firebaseapp.com",
+              projectId: "week-schedule-25992",
+              storageBucket: "week-schedule-25992.appspot.com",
+              messagingSenderId: "78973064283",
+              appId: "1:78973064283:web:fb55d96be58d7581ba9b7e",
+              measurementId: "G-0DLPGVME5Y"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Reference to the collection
+        const locationsRef = db.collection("locations");
+
+        // Listen for form submission
+        document.getElementById('locationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const location = document.getElementById('location').value;
+
+            // Add data to Firestore
+            locationsRef.add({
+                name: name,
+                location: location
+            });
+
+            // Clear form fields
+            document.getElementById('name').value = "";
+            document.getElementById('location').value = "";
+        });
+
+        // Listen for real-time updates and display submitted locations
+        locationsRef.onSnapshot((snapshot) => {
+            const locationList = document.getElementById('locationList');
+            locationList.innerHTML = "";
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                const li = document.createElement('li');
+                li.textContent = `${data.name}: ${data.location}`;
+                locationList.appendChild(li);
+            });
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Location Tracker</title>
     <style>
         body {
             font-family: Arial, sans-serif;
